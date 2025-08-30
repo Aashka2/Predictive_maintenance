@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Check Maintenance</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 2rem 3rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #1a237e;
+      text-align: center;
+    }
+
+    header p {
+      text-align: center;
+      color: #555;
+      margin-bottom: 2rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    input {
+      padding: 0.6rem;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      background: linear-gradient(to right, #00bcd4, #2196f3);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #2196f3, #00bcd4);
+    }
+
+    #result {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Predictive Maintenance System</h1>
+      <p>Enter sensor data to check if maintenance is needed.</p>
+    </header>
+
+    <form id="sensorForm">
+      <label for="air_temp">Air Temperature (K):</label>
+      <input type="number" step="0.1" id="air_temp" required />
+
+      <label for="process_temp">Process Temperature (K):</label>
+      <input type="number" step="0.1" id="process_temp" required />
+
+      <label for="rotational_speed">Rotational Speed (RPM):</label>
+      <input type="number" id="rotational_speed" required />
+
+      <label for="torque">Torque (Nm):</label>
+      <input type="number" step="0.1" id="torque" required />
+
+      <label for="tool_wear">Tool Wear (min):</label>
+      <input type="number" id="tool_wear" required />
+
+      <button type="submit">Check Maintenance</button>
+    </form>
+
+    <h2 id="result"></h2>
+  </div>
+
+  <script>
+    document.getElementById("sensorForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      let sensorData = {
+        "Air temperature [K]": parseFloat(document.getElementById("air_temp").value),
+        "Process temperature [K]": parseFloat(document.getElementById("process_temp").value),
+        "Rotational speed [rpm]": parseInt(document.getElementById("rotational_speed").value),
+        "Torque [Nm]": parseFloat(document.getElementById("torque").value),
+        "Tool wear [min]": parseInt(document.getElementById("tool_wear").value)
+      };
+
+      let thresholdFlag = sensorData["Air temperature [K]"] > 302 ||
+                          sensorData["Process temperature [K]"] > 311 ||
+                          sensorData["Torque [Nm]"] > 50 ||
+                          sensorData["Tool wear [min]"] > 140;
+
+      let response = await fetch("/predict", {
+        method: "POST",
+        body: JSON.stringify(sensorData),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      let result = await response.json();
+
+      let message = result.maintenance_needed
+        ? "⚠️ Maintenance Required!"
+        : "✅ No Maintenance Needed.";
+
+      if (thresholdFlag && !result.maintenance_needed) {
+        message += "\n⚠️ Warning: Sensor thresholds suggest potential maintenance soon.";
+      }
+
+      document.getElementById("result").innerText = message;
+    });
+  </script>
+</body>
+</html>
+

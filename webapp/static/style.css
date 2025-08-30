@@ -1,0 +1,49 @@
+/* Landing Page Styles */
+body.landing {
+  background: url("background.jpg") no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #0f172a;
+}
+
+.landing-container {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 60px;
+  border-radius: 30px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.landing-container h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.landing-container p {
+  font-size: 16px;
+  margin-bottom: 40px;
+}
+
+.get-started-button {
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  color: white;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+}
+
+.get-started-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+}
